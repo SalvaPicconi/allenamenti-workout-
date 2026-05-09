@@ -22,6 +22,8 @@
   <script type="text/babel">
     const { useState, useMemo } = React;
 
+    // ===== CATALOGO WORKOUT =====
+    // Per aggiungere un nuovo allenamento basta aggiungere un oggetto qui sotto.
     const WORKOUTS = [
       {
         id: 'outdoor-forza-parco',
@@ -63,6 +65,48 @@
         persona: 'entrambi',
         color: 'orange',
         url: 'outdoor-fitness.html#giorno3',
+        available: true,
+      },
+      {
+        id: 'ofelia-forza-parco',
+        title: 'Forza al Parco — Hip-Safe',
+        subtitle: 'Glutei · Core · Isometrico',
+        description: 'Hip lift, glute bridge, hollow hold e push-up su panchina. Senza squat né affondi. Tutela le anche.',
+        icon: '💪',
+        duration: '46 min',
+        level: 'Intermedio',
+        tags: ['Forza', 'Outdoor', 'Hip-Safe'],
+        persona: 'ofelia',
+        color: 'emerald',
+        url: 'ofelia-outdoor-fitness.html#giorno1',
+        available: true,
+      },
+      {
+        id: 'ofelia-bici-core',
+        title: 'Bici + Core + Stretch — Hip-Safe',
+        subtitle: 'Cardio · Core · Mobilità',
+        description: '30 min di bici a zone di intensità, circuito core hip-safe e stretching completo.',
+        icon: '🚴',
+        duration: '61 min',
+        level: 'Intermedio',
+        tags: ['Cardio', 'Core', 'Hip-Safe'],
+        persona: 'ofelia',
+        color: 'sky',
+        url: 'ofelia-outdoor-fitness.html#giorno2',
+        available: true,
+      },
+      {
+        id: 'ofelia-camminata-mobilita',
+        title: 'Camminata + Mobilità',
+        subtitle: 'Cardio lieve · Mobilità totale',
+        description: '8 intervalli di camminata veloce in piano, mobilità articolare e stretching. Nessun impatto sulle anche.',
+        icon: '🚶',
+        duration: '48 min',
+        level: 'Base',
+        tags: ['Cardio', 'Mobilità', 'Hip-Safe'],
+        persona: 'ofelia',
+        color: 'orange',
+        url: 'ofelia-outdoor-fitness.html#giorno3',
         available: true,
       },
       {
@@ -109,11 +153,35 @@
       },
     ];
 
+    // ===== CONFIGURAZIONE PERSONE =====
     const PERSONE = {
-      tutti: { label: 'Tutti', emoji: '👥', activeBg: 'bg-white', activeText: 'text-slate-900' },
-      salvatore: { label: 'Salvatore', emoji: '💚', activeBg: 'bg-emerald-500', activeText: 'text-white', badge: 'bg-emerald-900/50 text-emerald-300 border-emerald-700/50', dot: 'bg-emerald-400' },
-      ofelia: { label: 'Ofelia', emoji: '🌸', activeBg: 'bg-rose-500', activeText: 'text-white', badge: 'bg-rose-900/50 text-rose-300 border-rose-700/50', dot: 'bg-rose-400' },
-      entrambi: { label: 'Entrambi', badge: 'bg-amber-900/50 text-amber-300 border-amber-700/50', dot: 'bg-amber-400' },
+      tutti: {
+        label: 'Tutti',
+        emoji: '👥',
+        activeBg: 'bg-white',
+        activeText: 'text-slate-900',
+      },
+      salvatore: {
+        label: 'Salvatore',
+        emoji: '💚',
+        activeBg: 'bg-emerald-500',
+        activeText: 'text-white',
+        badge: 'bg-emerald-900/50 text-emerald-300 border-emerald-700/50',
+        dot: 'bg-emerald-400',
+      },
+      ofelia: {
+        label: 'Ofelia',
+        emoji: '🌸',
+        activeBg: 'bg-rose-500',
+        activeText: 'text-white',
+        badge: 'bg-rose-900/50 text-rose-300 border-rose-700/50',
+        dot: 'bg-rose-400',
+      },
+      entrambi: {
+        label: 'Entrambi',
+        badge: 'bg-amber-900/50 text-amber-300 border-amber-700/50',
+        dot: 'bg-amber-400',
+      },
     };
 
     const COLOR_RING = {
@@ -134,6 +202,7 @@
       amber:   'bg-amber-900/40 text-amber-300',
     };
 
+    // ===== BADGE PERSONA =====
     function PersonaBadge({ persona }) {
       if (persona === 'entrambi') {
         return (
@@ -152,10 +221,14 @@
       );
     }
 
+    // ===== WORKOUT CARD =====
     function WorkoutCard({ w, index }) {
       const ring = COLOR_RING[w.color] || COLOR_RING.emerald;
       const iconBg = COLOR_ICON_BG[w.color] || COLOR_ICON_BG.emerald;
-      const handleClick = () => { if (w.available) window.location.href = w.url; };
+
+      const handleClick = () => {
+        if (w.available) window.location.href = w.url;
+      };
 
       return (
         <div
@@ -165,31 +238,40 @@
           onClick={handleClick}
         >
           <div className="flex items-start gap-4">
+            {/* Icon */}
             <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 ${iconBg}`}>
               {w.icon}
             </div>
+
+            {/* Content */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1 flex-wrap">
                 <PersonaBadge persona={w.persona} />
                 {!w.available && (
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-500 border border-slate-700">In arrivo</span>
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-500 border border-slate-700">
+                    In arrivo
+                  </span>
                 )}
               </div>
-              <h3 className="text-white font-bold text-xl leading-tight">{w.title}</h3>
-              <p className="text-slate-400 text-base mt-0.5">{w.subtitle}</p>
-              <p className="text-slate-500 text-sm mt-2 leading-relaxed line-clamp-2">{w.description}</p>
-              <div className="flex items-center gap-3 mt-3 text-slate-500">
-                <span className="text-sm">⏱ {w.duration}</span>
-                <span className="text-sm">·</span>
-                <span className="text-sm">{w.level}</span>
-                <span className="text-sm">·</span>
+              <h3 className="text-white font-bold text-lg leading-tight">{w.title}</h3>
+              <p className="text-slate-400 text-sm mt-0.5">{w.subtitle}</p>
+              <p className="text-slate-500 text-xs mt-2 leading-relaxed line-clamp-2">{w.description}</p>
+
+              {/* Meta */}
+              <div className="flex items-center gap-3 mt-3 text-xs text-slate-500">
+                <span>⏱ {w.duration}</span>
+                <span>·</span>
+                <span>{w.level}</span>
+                <span>·</span>
                 <div className="flex gap-1 flex-wrap">
                   {w.tags.map(t => (
-                    <span key={t} className="bg-slate-800 text-slate-400 text-xs px-1.5 py-0.5 rounded">{t}</span>
+                    <span key={t} className="bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded">{t}</span>
                   ))}
                 </div>
               </div>
             </div>
+
+            {/* Arrow */}
             {w.available && (
               <div className="text-slate-600 flex-shrink-0 mt-1">
                 <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -202,25 +284,31 @@
       );
     }
 
+    // ===== MAIN APP =====
     function Hub() {
       const [filtro, setFiltro] = useState('tutti');
+
       const filtered = useMemo(() => {
         if (filtro === 'tutti') return WORKOUTS;
-        return WORKOUTS.filter(w => w.persona === filtro || w.persona === 'entrambi');
+        return WORKOUTS.filter(w => w.persona === filtro || (filtro !== 'ofelia' && w.persona === 'entrambi'));
       }, [filtro]);
+
       const disponibili = filtered.filter(w => w.available).length;
       const totale = filtered.length;
 
       return (
         <div className="min-h-screen bg-slate-950 text-white">
           <div className="max-w-lg mx-auto px-4 pb-16">
+
+            {/* Header */}
             <header className="pt-10 pb-6 text-center">
               <div className="text-5xl mb-4">🏃‍♂️🏃‍♀️</div>
               <h1 className="text-3xl font-bold tracking-tight mb-1">Allenamenti</h1>
-              <p className="text-slate-400 text-lg font-medium">Salvatore & Ofelia</p>
-              <p className="text-slate-600 text-base mt-2">{disponibili} disponibili · {totale} totali</p>
+              <p className="text-slate-400 text-base font-medium">Salvatore & Ofelia</p>
+              <p className="text-slate-600 text-sm mt-2">{disponibili} disponibili · {totale} totali</p>
             </header>
 
+            {/* Filtro persona */}
             <div className="flex gap-2 mb-8 bg-slate-900 p-1.5 rounded-2xl">
               {['tutti', 'salvatore', 'ofelia'].map(p => {
                 const active = filtro === p;
@@ -229,8 +317,10 @@
                   <button
                     key={p}
                     onClick={() => setFiltro(p)}
-                    className={`flex-1 py-2.5 rounded-xl text-base font-semibold transition-all duration-200
-                      ${active ? `${cfg.activeBg} ${cfg.activeText} shadow-lg` : 'text-slate-400 hover:text-slate-200'}`}
+                    className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200
+                      ${active
+                        ? `${cfg.activeBg} ${cfg.activeText} shadow-lg`
+                        : 'text-slate-400 hover:text-slate-200'}`}
                   >
                     {cfg.emoji} {cfg.label}
                   </button>
@@ -238,14 +328,19 @@
               })}
             </div>
 
+            {/* Cards */}
             <div className="space-y-3">
-              {filtered.map((w, i) => <WorkoutCard key={w.id} w={w} index={i} />)}
+              {filtered.map((w, i) => (
+                <WorkoutCard key={w.id} w={w} index={i} />
+              ))}
             </div>
 
+            {/* Footer */}
             <div className="mt-10 text-center text-slate-700 text-xs">
               <p>Tocca una scheda per iniziare l'allenamento</p>
               <p className="mt-1">Nuovi allenamenti in arrivo 🚀</p>
             </div>
+
           </div>
         </div>
       );
