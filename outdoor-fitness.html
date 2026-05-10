@@ -69,6 +69,8 @@
 
     const useBeeper = () => {
       const ctxRef = useRef(null);
+      const lastSpokenRef = useRef(null);
+
       const ensureCtx = () => {
         if (!ctxRef.current) {
           try { ctxRef.current = new (window.AudioContext || window.webkitAudioContext)(); }
@@ -77,21 +79,99 @@
         if (ctxRef.current && ctxRef.current.state === 'suspended') ctxRef.current.resume();
         return ctxRef.current;
       };
-      const tone = (freq, dur, vol = 0.25) => {
+
+      const tone = (freq, dur, vol = 0.25, type = 'sine') => {
         const ctx = ensureCtx(); if (!ctx) return;
-        const o = ctx.createOscillator(); const g = ctx.createGain();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
         o.connect(g); g.connect(ctx.destination);
-        o.frequency.value = freq; o.type = 'sine';
+        o.frequency.value = freq;
+        o.type = type;
         g.gain.setValueAtTime(vol, ctx.currentTime);
         g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
         o.start(); o.stop(ctx.currentTime + dur);
       };
+
+      const sequence = (notes) => {
+        const ctx = ensureCtx(); if (!ctx) return;
+        notes.forEach((n, i) => {
+          setTimeout(() => tone(n.freq, n.dur, n.vol || 0.25, n.type || 'sine'), n.delay || i * 150);
+        });
+      };
+
+      const speak = (text, opts = {}) => {
+        if (!('speechSynthesis' in window)) return;
+        if (lastSpokenRef.current && lastSpokenRef.current.text === text && Date.now() - lastSpokenRef.current.t < 500) return;
+        lastSpokenRef.current = { text, t: Date.now() };
+        try {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = 'it-IT';
+          u.rate = opts.rate || 1.05;
+          u.pitch = opts.pitch || 1.0;
+          u.volume = opts.volume || 1.0;
+          window.speechSynthesis.speak(u);
+        } catch(e) {}
+      };
+
       return {
         initAudio: ensureCtx,
-        countdown: () => tone(600, 0.1, 0.2),
-        startWork: () => { tone(900, 0.15, 0.32); setTimeout(() => tone(900, 0.15, 0.32), 180); },
-        startRest: () => tone(450, 0.25, 0.28),
-        finish: () => { tone(700, 0.18); setTimeout(() => tone(900, 0.18), 220); setTimeout(() => tone(1200, 0.45), 440); }
+
+        // === SUONI BASE (retrocompatibili) ===
+        countdown: () => tone(700, 0.08, 0.22, 'square'),
+        startWork: () => sequence([
+          { freq: 880, dur: 0.12, vol: 0.32 },
+          { freq: 1175, dur: 0.18, vol: 0.34, delay: 130 }
+        ]),
+        startRest: () => sequence([
+          { freq: 587, dur: 0.18, vol: 0.28 },
+          { freq: 440, dur: 0.22, vol: 0.26, delay: 180 }
+        ]),
+        finish: () => sequence([
+          { freq: 523, dur: 0.15, vol: 0.3 },
+          { freq: 659, dur: 0.15, vol: 0.32, delay: 180 },
+          { freq: 784, dur: 0.15, vol: 0.34, delay: 360 },
+          { freq: 1047, dur: 0.5, vol: 0.36, delay: 540 }
+        ]),
+
+        // === SUONI EVENTO SPECIFICI ===
+        sessionStart: () => {
+          sequence([
+            { freq: 523, dur: 0.12 },
+            { freq: 659, dur: 0.12, delay: 130 },
+            { freq: 784, dur: 0.25, delay: 260 }
+          ]);
+          setTimeout(() => speak('Iniziamo. Forza!'), 700);
+        },
+        halfway: () => {
+          tone(900, 0.15, 0.28);
+          setTimeout(() => speak('Metà allenamento. Continua così'), 200);
+        },
+        lastRound: () => {
+          sequence([
+            { freq: 1047, dur: 0.1 },
+            { freq: 1047, dur: 0.1, delay: 130 }
+          ]);
+          setTimeout(() => speak('Ultimo giro. Dai tutto!'), 280);
+        },
+        warning10s: () => tone(660, 0.08, 0.18, 'triangle'),
+        warning3s: (n) => {
+          tone(880, 0.1, 0.3, 'square');
+          speak(String(n));
+        },
+        transitionTone: () => sequence([
+          { freq: 700, dur: 0.08 },
+          { freq: 900, dur: 0.08, delay: 90 }
+        ]),
+
+        // === VOCE ===
+        speak,
+        announceExercise: (name, durationSec) => {
+          const text = durationSec >= 30 ? `${name}. ${durationSec} secondi` : `${name}`;
+          speak(text);
+        },
+        announceRest: () => speak('Recupero'),
+        announceReady: (next) => speak(`Pronti. Prossimo: ${next}`)
       };
     };
 
@@ -350,29 +430,58 @@
 
       useEffect(() => {
         if (!running || view !== 'workout') return;
-        const interval = setInterval(() => {
-          setSecondsLeft(prev => {
-            if (prev <= 1) return 0;
-            if (soundOn && prev <= 4 && prev > 1) beeper.countdown();
-            return prev - 1;
+        const half = Math.floor(totalDuration / 2);
+        const t = setInterval(() => {
+          setSecondsLeft(s => {
+            if (s <= 1) return 0;
+            if (soundOn) {
+              if (s === 11) beeper.warning10s();
+              if (s === 4) beeper.warning3s(3);
+              if (s === 3) beeper.warning3s(2);
+              if (s === 2) beeper.warning3s(1);
+            }
+            return s - 1;
           });
-          setTotalElapsed(prev => prev + 1);
+          setTotalElapsed(prev => {
+            if (soundOn && half > 60 && prev + 1 === half) beeper.halfway();
+            return prev + 1;
+          });
         }, 1000);
-        return () => clearInterval(interval);
+        return () => clearInterval(t);
       }, [running, view, soundOn]);
 
       useEffect(() => {
         if (!running || secondsLeft !== 0) return;
         if (phaseIdx >= (workout?.phases.length || 0) - 1) {
           setRunning(false);
-          if (soundOn) beeper.finish();
+          if (soundOn) {
+            beeper.finish();
+            setTimeout(() => beeper.speak('Allenamento completato. Bravo!'), 1500);
+          }
           setView('complete');
           return;
         }
         const next = workout.phases[phaseIdx + 1];
         if (soundOn) {
-          if (next.type === 'work' || next.type === 'bike') beeper.startWork();
-          else beeper.startRest();
+          if (next.type === 'work') beeper.startWork();
+          else if (next.type === 'bike') {
+            beeper.startWork();
+            setTimeout(() => beeper.speak('Inizia il tratto in bici'), 400);
+          }
+          else if (next.type === 'rest' || next.type === 'rest_long') beeper.startRest();
+          else if (next.type === 'transition') beeper.transitionTone();
+          else if (next.type === 'stretch') {
+            beeper.transitionTone();
+            setTimeout(() => beeper.speak('Stretching'), 300);
+          }
+          else beeper.transitionTone();
+
+          if (['work', 'bike', 'stretch', 'mobility', 'cooldown'].includes(next.type)) {
+            setTimeout(() => beeper.announceExercise(next.name, next.duration), 800);
+          }
+          if (/ultim|finale/i.test(next.name)) {
+            setTimeout(() => beeper.lastRound(), 1500);
+          }
         }
         setPhaseIdx(i => i + 1);
         setSecondsLeft(next.duration);
@@ -387,6 +496,9 @@
         setRunning(false);
         setView('workout');
         beeper.initAudio();
+        if (soundOn) {
+          setTimeout(() => beeper.speak(`Allenamento ${w.title}. Pronti a iniziare`), 200);
+        }
       };
 
       useEffect(() => {
@@ -395,7 +507,13 @@
         if (id) startWorkout(id);
       }, []);
 
-      const togglePlay = () => { if (!running) beeper.initAudio(); setRunning(r => !r); };
+      const togglePlay = () => {
+        if (!running) {
+          beeper.initAudio();
+          if (soundOn) beeper.sessionStart();
+        }
+        setRunning(r => !r);
+      };
 
       const skipPhase = () => {
         if (!workout) return;
