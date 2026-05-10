@@ -169,56 +169,97 @@
     ];
 
     const day2Phases = [
-      ex('Mobilità anche', 60, 'warmup', 'hips', 'Cerchi pelvici ampi'),
-      ex('Mobilità ginocchia', 45, 'warmup', 'knees', 'Cerchi piccoli'),
-      ex('Mobilità caviglie', 60, 'warmup', 'ankles', 'Entrambe direzioni'),
-      ex('Cerchi spalle', 45, 'warmup', 'shoulders', 'Avanti e indietro'),
-      ex('Mobilità collo', 30, 'warmup', 'neck', 'Lentamente, no estremi'),
-      ex('Camminata 20 passi', 60, 'warmup', 'walk', 'Attiva il sistema cardio'),
-      ex('🚴 BICI: Riscaldamento (Zona 1)', 300, 'bike', 'bike', 'Pedalata leggera, ritmo blando, RPM 70-80', 'Frequenza cardiaca bassa, riscaldamento progressivo'),
-      ex('🚴 BICI: Resistenza (Zona 2)', 600, 'bike', 'bike', 'Ritmo costante, riesci a parlare, RPM 80-90', 'Zona aerobica, fondamentale per il fondo'),
-      ex('🚴 BICI: Spinta (Zona 3)', 480, 'bike', 'bike', 'Ritmo deciso, parlare diventa difficile', 'Migliora la soglia aerobica'),
-      ex('🚴 BICI: Resistenza (Zona 2)', 360, 'bike', 'bike', 'Torna a ritmo costante'),
-      ex('🚴 BICI: Defaticamento (Zona 1)', 240, 'bike', 'bike', 'Pedalata leggerissima per scaricare'),
-      ex('Transizione: scendi e prepara core', 60, 'transition', 'ready', 'Posa la bici, prendi tappetino o telo'),
-      ex('PRONTI: Core Round 1 di 2', 15, 'transition', 'ready', 'Sdraiati a terra'),
-      ex('Plank sui gomiti', 30, 'work', 'plank', 'Corpo in linea, NO testa alzata'),
+      // === PRE-BIKE MOBILITY (3 min) ===
+      ex('Mobilità collo', 30, 'warmup', 'neck', 'Cerchi lenti, NO testa indietro', '⚠️ Tutela cervicale'),
+      ex('Cerchi spalle', 30, 'warmup', 'shoulders', 'Avanti e indietro'),
+      ex('Mobilità anche', 45, 'warmup', 'hips', 'Cerchi pelvici ampi'),
+      ex('Mobilità ginocchia', 30, 'warmup', 'knees', 'Cerchi piccoli, controllati'),
+      ex('Mobilità caviglie', 45, 'warmup', 'ankles', 'Importante prima della bici'),
+
+      // === BIKE OUT — WARMUP RIDE (25 min) ===
+      ex('🚴 ANDATA: Partenza Zona 1', 300, 'bike', 'bike', 'Pedalata leggera, RPM 70-80', 'Riscaldamento progressivo'),
+      ex('🚴 ANDATA: Resistenza Zona 2', 600, 'bike', 'bike', 'Ritmo costante, parla normalmente', 'Aerobico fondamentale'),
+      ex('🚴 ANDATA: Spinta Zona 2-3', 420, 'bike', 'bike', 'Ritmo deciso verso destinazione', 'Soglia aerobica'),
+      ex('🚴 ANDATA: Avvicinamento Zona 1', 180, 'bike', 'bike', 'Rallenta, ultimo tratto blando', 'Preparati a scendere'),
+
+      // === ON-SITE ACTIVATION (5 min) ===
+      ex('Sceso dalla bici - prepara tappetino', 60, 'transition', 'ready', 'Posa bici, prendi telo o tappetino'),
+      ex('Cerchi spalle post-bici', 30, 'warmup', 'shoulders', 'Sciogli le spalle'),
+      ex('Mobilità anche post-bici', 60, 'warmup', 'hips', 'Cerchi ampi, riapri le anche'),
+      ex('Squat lenti attivazione', 60, 'warmup', 'squat', '50% di profondità, lenti', 'Risveglio gambe dopo bici'),
+      ex('Plank attivazione', 30, 'warmup', 'plank', 'Tieni 30s, corpo in linea'),
+      ex('Cobra leggero', 30, 'warmup', 'cobra', 'Scarico schiena dopo bici'),
+
+      // === ROUND 1 di 3 ===
+      ex('PRONTI: Round 1 di 3', 15, 'transition', 'ready', 'Posizione iniziale'),
+      ex('Plank sui gomiti', 40, 'work', 'plank', 'Corpo in linea, sguardo a terra', '⚠️ NO testa alzata'),
       ex('Recupero', 20, 'rest', 'rest', 'Respira'),
       ex('Glute bridge', 40, 'work', 'glute_bridge', 'Stringi i glutei in alto'),
       ex('Recupero', 20, 'rest', 'rest', 'Sciogli'),
-      ex('Bird dog destro/sinistro', 40, 'work', 'bird_dog', 'A 4 zampe, alterna braccio dx/gamba sx'),
+      ex('Bird dog dx/sx', 40, 'work', 'bird_dog', 'A 4 zampe, alterna braccio/gamba opposta'),
       ex('Recupero', 20, 'rest', 'rest', 'Respira'),
-      ex('Crunch a terra (lieve)', 35, 'work', 'plank', 'Solo collo e spalle alzate, NO trazione collo', '⚠️ Mani dietro le orecchie, non al collo'),
-      ex('Recupero', 20, 'rest', 'rest', 'Sciogli'),
-      ex('Plank laterale destro', 25, 'work', 'plank', 'Su gomito, fianco destro a terra, corpo in linea'),
-      ex('Recupero', 20, 'rest', 'rest', 'Cambia lato'),
-      ex('Plank laterale sinistro', 25, 'work', 'plank', 'Altro lato'),
-      ex('Recupero lungo', 60, 'rest_long', 'rest', 'Bravo! Round 2 in arrivo'),
-      ex('PRONTI: Core Round 2 di 2', 15, 'transition', 'ready', 'Ultimo round'),
-      ex('Plank sui gomiti', 30, 'work', 'plank', 'Tieni la linea'),
+      ex('Push-up sulla panchina', 40, 'work', 'pushup_bench', 'Mani su panchina, gomiti 45°'),
+      ex('Recupero', 20, 'rest', 'rest', 'Sciogli spalle'),
+      ex('Plank laterale destro', 30, 'work', 'plank', 'Su gomito, fianco dx, corpo in linea'),
+      ex('Cambia lato', 10, 'rest', 'rest', 'Veloce'),
+      ex('Plank laterale sinistro', 30, 'work', 'plank', 'Altro lato'),
+      ex('Recupero lungo', 60, 'rest_long', 'rest', 'Idratati. Round 2!'),
+
+      // === ROUND 2 di 3 ===
+      ex('PRONTI: Round 2 di 3', 15, 'transition', 'ready', 'Riprendi'),
+      ex('Plank sui gomiti', 40, 'work', 'plank', 'Tieni la linea'),
       ex('Recupero', 20, 'rest', 'rest', 'Respira'),
-      ex('Glute bridge', 40, 'work', 'glute_bridge', 'Pausa in alto'),
+      ex('Glute bridge', 40, 'work', 'glute_bridge', 'Pausa in alto 1s'),
       ex('Recupero', 20, 'rest', 'rest', 'Sciogli'),
-      ex('Bird dog destro/sinistro', 40, 'work', 'bird_dog', 'Concentrazione, equilibrio'),
+      ex('Bird dog dx/sx', 40, 'work', 'bird_dog', 'Equilibrio e controllo'),
       ex('Recupero', 20, 'rest', 'rest', 'Respira'),
-      ex('Crunch a terra (lieve)', 35, 'work', 'plank', 'Tutela il collo'),
+      ex('Push-up sulla panchina', 40, 'work', 'pushup_bench', 'Costanza tecnica'),
+      ex('Recupero', 20, 'rest', 'rest', 'Sciogli spalle'),
+      ex('Plank laterale destro', 30, 'work', 'plank', 'Tieni'),
+      ex('Cambia lato', 10, 'rest', 'rest', 'Veloce'),
+      ex('Plank laterale sinistro', 30, 'work', 'plank', 'Tieni'),
+      ex('Recupero lungo', 60, 'rest_long', 'rest', 'Ultimo round!'),
+
+      // === ROUND 3 di 3 ===
+      ex('PRONTI: Round 3 — finale', 15, 'transition', 'ready', 'Forza!'),
+      ex('Plank sui gomiti', 40, 'work', 'plank', 'Ultimo plank, dai tutto'),
+      ex('Recupero', 20, 'rest', 'rest', 'Respira'),
+      ex('Glute bridge', 40, 'work', 'glute_bridge', 'Stringi forte'),
       ex('Recupero', 20, 'rest', 'rest', 'Sciogli'),
-      ex('Plank laterale destro', 25, 'work', 'plank', 'Tieni'),
-      ex('Recupero', 20, 'rest', 'rest', 'Altro lato'),
-      ex('Plank laterale sinistro', 25, 'work', 'plank', 'Ultimo!'),
-      ex('Recupero', 30, 'rest', 'rest', 'Stretch finale'),
-      ex('Stretch quadricipiti destro', 40, 'stretch', 'stretch', 'Piede al gluteo, mano per equilibrio'),
-      ex('Stretch quadricipiti sinistro', 40, 'stretch', 'stretch', 'Altro lato'),
-      ex('Stretch hamstring (a terra)', 50, 'stretch', 'stretch', 'Seduto, busto avanti dolcemente verso le punte'),
-      ex('Stretch glutei destro', 45, 'stretch', 'stretch', 'Sdraiato, caviglia su ginocchio opposto, tira'),
-      ex('Stretch glutei sinistro', 45, 'stretch', 'stretch', 'Altro lato'),
-      ex('Stretch flessori anca destro', 45, 'stretch', 'lunge', 'Affondo profondo a terra'),
-      ex('Stretch flessori anca sinistro', 45, 'stretch', 'lunge', 'Altro lato'),
-      ex('Stretch torace e spalle', 60, 'stretch', 'shoulders', 'Mani intrecciate dietro, alza il petto'),
-      ex('Stretch collo laterale', 50, 'stretch', 'neck', 'Inclina dolcemente, NO trazione', '⚠️ Cervicale: solo dolce'),
-      ex('Cobra lieve', 45, 'stretch', 'cobra', 'Solo busto sollevato, anche a terra'),
-      ex('Posizione del bambino', 90, 'stretch', 'childpose', 'Lascia andare, respira profondamente'),
-      ex('Respirazione conclusiva', 60, 'stretch', 'rest', 'Inspira 4s, espira 6s. Bravo!')
+      ex('Bird dog dx/sx', 40, 'work', 'bird_dog', 'Concentrati'),
+      ex('Recupero', 20, 'rest', 'rest', 'Respira'),
+      ex('Push-up sulla panchina', 40, 'work', 'pushup_bench', 'Ultimi push-up'),
+      ex('Recupero', 20, 'rest', 'rest', 'Sciogli'),
+      ex('Plank laterale destro', 30, 'work', 'plank', 'Tieni'),
+      ex('Cambia lato', 10, 'rest', 'rest', 'Veloce'),
+      ex('Plank laterale sinistro', 30, 'work', 'plank', 'Ultimissimo'),
+      ex('Recupero', 30, 'rest', 'rest', 'Bravo! Stretch on-site'),
+
+      // === ON-SITE STRETCH (5 min) ===
+      ex('Stretch quadricipiti destro', 30, 'stretch', 'stretch', 'Piede al gluteo'),
+      ex('Stretch quadricipiti sinistro', 30, 'stretch', 'stretch', 'Altro lato'),
+      ex('Stretch hamstring destro', 30, 'stretch', 'stretch', 'Piede su panchina, busto avanti'),
+      ex('Stretch hamstring sinistro', 30, 'stretch', 'stretch', 'Altro lato'),
+      ex('Stretch flessori anca', 60, 'stretch', 'lunge', 'Affondo dolce, anca avanti'),
+      ex('Stretch torace e spalle', 45, 'stretch', 'shoulders', 'Apri il petto, prepara il rientro'),
+      ex('Idrati e respira', 45, 'stretch', 'rest', 'Acqua, sali. Pronto al rientro?'),
+
+      // === BIKE BACK — COOLDOWN RIDE (25 min) ===
+      ex('🚴 RIENTRO: Avvio dolce Zona 1', 300, 'bike', 'bike', 'Ritmo blando, gambe ancora calde', 'Cooldown progressivo'),
+      ex('🚴 RIENTRO: Crociera Zona 2', 600, 'bike', 'bike', 'Ritmo costante, conversabile', 'Defaticamento attivo'),
+      ex('🚴 RIENTRO: Crociera leggera', 480, 'bike', 'bike', 'Respira, goditi il rientro', 'Continua il cooldown'),
+      ex('🚴 RIENTRO: Arrivo Zona 1', 120, 'bike', 'bike', 'Pedalata leggerissima, fine', 'Spegnimento finale'),
+
+      // === POST-BIKE FINAL STRETCH (5 min) ===
+      ex('A casa: stretch finale', 15, 'transition', 'ready', 'Posa bici, scarpe comode'),
+      ex('Stretch polpacci destro', 30, 'stretch', 'stretch', 'Mani al muro, gamba dietro tesa'),
+      ex('Stretch polpacci sinistro', 30, 'stretch', 'stretch', 'Altro lato'),
+      ex('Stretch quadricipiti destro', 30, 'stretch', 'stretch', 'Piede al gluteo'),
+      ex('Stretch quadricipiti sinistro', 30, 'stretch', 'stretch', 'Altro lato'),
+      ex('Stretch glutei destro', 40, 'stretch', 'stretch', 'Sdraiato, caviglia su ginocchio opposto'),
+      ex('Stretch glutei sinistro', 40, 'stretch', 'stretch', 'Altro lato'),
+      ex('Posizione del bambino', 60, 'stretch', 'childpose', 'Lascia andare'),
+      ex('Respirazione finale', 30, 'stretch', 'rest', 'Inspira 4s, espira 6s. Bravo!')
     ];
 
     const day3Phases = [
@@ -271,7 +312,7 @@
 
     const workouts = [
       { id: 1, title: 'Forza al Parco', subtitle: 'Panchine · Corpo libero', icon: '💪', phases: day1Phases },
-      { id: 2, title: 'Bici + Core + Stretch', subtitle: 'Cardio · Core · Mobilità', icon: '🚴', phases: day2Phases },
+      { id: 2, title: 'Bici + Core + Stretch', subtitle: 'Bici commute · Workout · 90 min', icon: '🚴', phases: day2Phases },
       { id: 3, title: 'Cardio Scale + Mobilità', subtitle: 'HIIT · Mobilità totale', icon: '🔥', phases: day3Phases }
     ];
 
@@ -402,7 +443,7 @@
                         <div className="text-xs uppercase tracking-wider text-slate-500 font-medium">Giorno {w.id}</div>
                         <div className="text-xl font-bold text-white mb-0.5">{w.title}</div>
                         <div className="text-base text-slate-400">{w.subtitle}</div>
-                        <div className="text-sm text-slate-500 mt-2">⏱ 60 min · {w.phases.length} fasi</div>
+                        <div className="text-sm text-slate-500 mt-2">⏱ {w.phases.length} fasi</div>
                       </div>
                       <ChevronRight className="w-6 h-6 text-slate-600" />
                     </div>
